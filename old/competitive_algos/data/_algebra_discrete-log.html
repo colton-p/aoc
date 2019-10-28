@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <base href="https://cp-algorithms.com"/>
+    <title>Discrete Logarithm  - Competitive Programming Algorithms</title>
+    <script src="https://e-maxx-eng.github.io/e-maxx-eng/js/jq.js"></script>
+    <script src="https://e-maxx-eng.github.io/e-maxx-eng/js/common.js"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <link rel="stylesheet" href="https://e-maxx-eng.github.io/e-maxx-eng/css/common.css"/>
+
+    <!-- highlightjs for code highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/xcode.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <!-- end highlightjs -->
+    <meta name="google-site-verification" content="qSnbeMPNVgZ3kIpGVsPIAPIvEdwYSg583kPdwgJtFO8" />
+    <meta name="yandex-verification" content="f327630b02a1e115" />
+</head>
+<body data-v="2019-08-06:5158/2102 2019-08-05:3378/1494 2019-08-04:0/0 2019-08-03:0/0 2019-08-02:0/0 2019-08-01:0/0 2019-07-31:0/0">
+<div id="container">
+    <div id="navbar">
+        <span id="title">
+            <a href="./">CP-Algorithms</a>
+        </span>
+        <span id="menu">
+            <a href="https://github.com/e-maxx-eng/e-maxx-eng/commits/master/src/algebra/discrete-log.md" title="Changes History">Page Authors</a>
+        </span>
+        <span id="search" style="display:inline-block;width:200px;float:right;margin-top:7px;margin-right:20px;">
+            <div class="ya-site-form ya-site-form_inited_no" onclick="return {'action':'https://cp-algorithms.com/search-results.html','arrow':false,'bg':'transparent','fontsize':12,'fg':'#000000','language':'en','logo':'rb','publicname':'search e-maxx-eng','suggest':true,'target':'_self','tld':'com','type':2,'usebigdictionary':true,'searchid':2314495,'input_fg':'#000000','input_bg':'#ffffff','input_fontStyle':'normal','input_fontWeight':'normal','input_placeholder':null,'input_placeholderColor':'#000000','input_borderColor':'#7f9db9'}"><form action="https://yandex.com/search/site/" method="get" target="_self" accept-charset="utf-8"><input type="hidden" name="searchid" value="2314495"/><input type="hidden" name="l10n" value="en"/><input type="hidden" name="reqenc" value=""/><input type="search" name="text" value=""/><input type="submit" value="Search"/></form></div><style type="text/css">.ya-page_js_yes .ya-site-form_inited_no { display: none; }</style><script type="text/javascript">(function(w,d,c){var s=d.createElement('script'),h=d.getElementsByTagName('script')[0],e=d.documentElement;if((' '+e.className+' ').indexOf(' ya-page_js_yes ')===-1){e.className+=' ya-page_js_yes';}s.type='text/javascript';s.async=true;s.charset='utf-8';s.src=(d.location.protocol==='https:'?'https:':'http:')+'//site.yandex.net/v2.0/js/all.js';h.parentNode.insertBefore(s,h);(w[c]||(w[c]=[])).push(function(){Ya.Site.Form.init()})})(window,document,'yandex_site_callbacks');</script>
+        </span>
+    </div>
+<h1>Discrete Logarithm</h1>
+
+<p>The discrete logarithm is an integer $x$ solving the equation</p>
+
+<p>$$a^x \equiv b \pmod m,$$</p>
+
+<p>where $a$ and $m$ are relatively prime.
+<strong>Note</strong>, if they are not relatively prime, then the algorithm described below is incorrect, though it can be modified so that it can work.</p>
+
+<p>In this article, we describe the <strong>Baby step - giant step</strong> algorithm, proposed by Shanks in 1971, which has the time complexity $O(\sqrt{m} \log m)$. This algorithm is also known as <strong>meet-in-the-middle</strong> because it uses the technique of separating tasks in half.</p>
+
+<h2>Algorithm</h2>
+
+<p>Consider the equation:</p>
+
+<p>$$a^x \equiv b \pmod m,$$</p>
+
+<p>where $a$ and $m$ are relatively prime.</p>
+
+<p>Let $x = np - q$, where $n$ is some pre-selected constant (we will describe how to select $n$ later). $p$ is known as <strong>giant step</strong>, since increasing it by one increases $x$ by $n$. Similarly, $q$ is known as <strong>baby step</strong>.</p>
+
+<p>Obviously, any number $x$ in the interval $[0; m)$ can be represented in this form, where $p \in [1; \lceil \frac{m}{n} \rceil ]$ and $q \in [0; n]$.</p>
+
+<p>Then, the equation becomes:</p>
+
+<p>$$a^{np - q} \equiv b \pmod m.$$</p>
+
+<p>Using the fact that $a$ and $m$ are relatively prime, we obtain:</p>
+
+<p>$$a^{np} \equiv ba^q \pmod m$$</p>
+
+<p>This new equation can be rewritten in a simplified form:</p>
+
+<p>$$f_1(p) = f_2(q).$$</p>
+
+<p>This problem can be solved using the meet-in-the-middle method as follows:</p>
+
+<ul>
+<li>Calculate $f_1$ for all possible arguments $p$. Sort the array of value-argument pairs.</li>
+<li>For all possible arguments $q$, calculate $f_2$ and look for the corresponding $p$ in the sorted array using binary search.</li>
+</ul>
+
+<h2>Complexity</h2>
+
+<p>We can calculate $f_1(p)$ in $O(\log m)$ using the <a href="./algebra/binary-exp.html">binary exponentation algorithm</a>. Similarly for $f_2(q)$.</p>
+
+<p>In the first step of the algorithm, we need to calculate $f_1$ for every possible argument $p$ and then sort the values. Thus, this step has complexity:</p>
+
+<p>$$O\left(\left\lceil \frac{m}{n} \right\rceil \left(\log m + \log \left\lceil \frac{m}{n} \right\rceil \right)\right) = O\left( \left\lceil \frac {m}{n} \right\rceil \log m\right)$$</p>
+
+<p>In the second step of the algorithm, we need to calculate $f_2(q)$ for every possible argument $q$ and then do a binary search on the array of values of $f_1$, thus this step has complexity:</p>
+
+<p>$$O\left(n \left(\log m + \log \frac{m}{n} \right) \right) = O\left(n \log m\right).$$</p>
+
+<p>Now, when we add these two complexities, we get $\log m$ multiplied by the sum of $n$ and $m/n$, which is minimal when $n = m/n$, which means, to achieve optimal performance, $n$ should be chosen such that:</p>
+
+<p>$$n = \sqrt{m}.$$</p>
+
+<p>Then, the complexity of the algorithm becomes:</p>
+
+<p>$$O(\sqrt {m} \log m).$$</p>
+
+<h2>Implementation</h2>
+
+<h3>The simplest implementation</h3>
+
+<p>In the following code, the function <code>powmod</code> calculates $a^b \pmod m$ and the function <code>solve</code> produces a proper solution to the problem.
+It returns $-1$ if there is no solution and returns one of the possible solutions otherwise.
+The resulting discrete logarithm can be big, but you can make it smaller using <a href="./algebra/phi-function.html#toc-tgt-2">Euler's theorem</a>.</p>
+
+<pre><code class="cpp">int powmod(int a, int b, int m) {
+    int res = 1;
+    while (b &gt; 0) {
+        if (b &amp; 1) {
+            res = (res * a) % m;
+        }
+        a = (a * a) % m;
+        b &gt;&gt;= 1;
+    }
+    return res;
+}
+
+int solve(int a, int b, int m) {
+    int n = (int) sqrt (m + .0) + 1;
+    map&lt;int, int&gt; vals;
+    for (int p = n; p &gt;= 1; --p)
+        vals[powmod(a, p * n, m)] = p;
+    for (int q = 0; q &lt;= n; ++q) {
+        int cur = (powmod(a, q, m) * b) % m;
+        if (vals.count(cur)) {
+            int ans = vals[cur] * n - q;
+            return ans;
+        }
+    }
+    return -1;
+}
+</code></pre>
+
+<p>In this code, we used <code>map</code> from the C++ standard library to store the values of $f_1$.
+Internally, <code>map</code> uses a red-black tree to store values.
+Thus this code is a little bit slower than if we had used an array and binary searched, but is much easier to write.</p>
+
+<p>Another thing to note is that, if there are multiple arguments $p$ that map to the same value of $f_1$, we only store one such argument.
+This works in this case because we only want to return one possible solution.
+If we need to return all possible solutions, we need to change <code>map&lt;int, int&gt;</code> to, say, <code>map&lt;int, vector&lt;int&gt;&gt;</code>.
+We also need to change the second step accordingly.</p>
+
+<h2>Improved implementation</h2>
+
+<p>A possible improvement is to get rid of binary exponentiation.
+This can be done by keeping a variable that is multiplied by $a$ each time we increase $q$ and a variable that is multiplied by $a^n$ each time we increase $p$.
+With this change, the complexity of the algorithm is still the same, but now the $\log$ factor is only for the <code>map</code>.
+Instead of a <code>map</code>, we can also use a hash table (<code>unordered_map</code> in C++) which has the average time complexity $O(1)$ for inserting and searching.</p>
+
+<pre><code class="cpp">int solve(int a, int b, int m) {
+    int n = (int) sqrt (m + .0) + 1;
+
+    int an = 1;
+    for (int i = 0; i &lt; n; ++i)
+        an = (an * a) % m;
+
+    map&lt;int, int&gt; vals;
+    for (int p = 1, cur = an; p &lt;= n; ++p) {
+        if (!vals.count(cur))
+            vals[cur] = p;
+        cur = (cur * an) % m;
+    }
+
+    for (int q = 0, cur = b; q &lt;= n; ++q) {
+        if (vals.count(cur)) {
+            int ans = vals[cur] * n - q;
+            return ans;
+        }
+        cur = (cur * a) % m;
+    }
+    return -1;
+}
+</code></pre>
+
+<h2>Practice Problems</h2>
+
+<ul>
+<li><a href="http://www.spoj.com/problems/MOD/">Spoj - Power Modulo Inverted</a></li>
+<li><a href="https://community.topcoder.com/stat?c=problem_statement&amp;pm=14386&amp;rd=16801">Topcoder - SplittingFoxes3</a></li>
+</ul>
+
+    <div id="footer">
+    (c) 2014-2019 translation by <a href="http://github.com/e-maxx-eng">http://github.com/e-maxx-eng</a>
+    </div>
+</div>
+
+<script>
+if (/e\-maxx\-eng|cp\-algorithms/.test(location.href)) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-85220282-1', 'auto');
+  ga('send', 'pageview');
+}
+</script>
+</body>
+</html>

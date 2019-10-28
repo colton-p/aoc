@@ -1,0 +1,13 @@
+echo "day $1"
+
+echo "... $1.py"
+python start.py $1
+chmod +x "$1.py"
+echo "... $1.in.test"
+touch "$1.in.test"
+
+echo "... go"
+echo "python $1.py" > go
+chmod +x go
+cat go
+python --version

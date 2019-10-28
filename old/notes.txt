@@ -1,0 +1,43 @@
+- easy way to copy input to xx.in file
+
+- template for next day's script
+
+- primality check
+- prime factors
+   - non-prime factors too
+
+
+prefabs:
+  [x] dfs
+  [x] dijkstra
+  [x] knapsack
+  - emulator
+  - tree traversal
+  - tsp == score all permutations
+  - generalized pairwise: 'abcde' -> [ 'ab' 'bc' 'cd' ...]
+  - celluar automata
+      - 1d
+      - 2d
+  - vector math
+
+  - grid -> networkx graph
+  - adj func -> networkx graph
+
+
+  - grid -> all pairs distances -> tsp?
+    - 2016/24
+
+
+  - better input:
+    -> list of numbers
+    -> grid
+    -> instructions???
+    -> single string
+
+
+ - somehow recognize structured input:
+    - ["Alice sends 10 units to Bob.", "Bob sends 20 units to Alice"]
+      --> ["Alice", 10, "Bob"], ["Bob", 20, "Alice"]
+
+    - need to recognize distinct groups of things too:
+        "Alice sends 10 units to Bob" vs. "Bob eats 10 units."

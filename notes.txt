@@ -1,0 +1,56 @@
+
+
+
+Template for each day's problem:
+  - autogenerate meta script
+    - all includes
+    - basic scaffold
+
+Easy input grabbing
+  - fetch once, cache
+  - read with test option
+
+
+Prefabs
+  - go through list and clean up
+  - maybe entry points for nx library for graph theory
+    - decide on the most useful traversal guy
+
+Better input parsing:
+  - list of numbers
+  - grid
+  - instructions?
+  - single string
+
+Input recognition:
+  - ["Alice sends 10 units to Bob.", "Bob sends 20 units to Alice"]
+    --> ["Alice", 10, "Bob"], ["Bob", 20, "Alice"]
+  - need to recognize distinct groups of things too:
+    --> "Alice sends 10 units to Bob" vs. "Bob eats 10 units."
+
+Other
+  - primality check
+  - prime factors
+     - non-prime factors too
+
+  prefabs:
+    [x] dfs
+    [x] dijkstra
+    [x] knapsack
+    - emulator
+    - tree traversal
+    - tsp == score all permutations
+    - generalized pairwise: 'abcde' -> [ 'ab' 'bc' 'cd' ...]
+    - celluar automata
+        - 1d
+        - 2d
+    - vector math
+
+    - grid -> networkx graph
+    - adj func -> networkx graph
+
+
+    - grid -> all pairs distances -> tsp?
+      - 2016/24
+
+

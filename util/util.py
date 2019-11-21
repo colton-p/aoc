@@ -5,6 +5,23 @@ import requests
 
 from itertools import *
 
+
+
+
+# base input loading
+# input parsing
+
+
+# graph theory
+# number theory
+# GRIDS
+
+# itertools tricks
+
+# rotates and shifts
+
+
+
 def input_rows(day, year=2019, test=False, strip = True):
   path = 'inputs/%s-%s.in' % (year, day)
 

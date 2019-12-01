@@ -13,58 +13,37 @@ from util import *
 YEAR = 2015
 DAY = 9
 
-# TODO: how smart to make this?
-rows = input_rows(DAY, year=YEAR)
+iobj = Input.for_date(DAY, year=YEAR, test=False)
+iobj.pp_analyze()
+rows = list(iobj.rows)
 
-(kind, rows, max_row, min_row, _x) = analyze_input(rows)
-print("  Kind: %s" % kind)
-print("n rows: %4d" % rows)
-if min_row == max_row:
-  print("n cols: %4d" % (max_row))
-else:
-  print("n cols: %d-%d" % (min_row, max_row))
-print('.' * 16)
-print('')
+def parse(iobj):
+  rows = iobj.tuples()
 
+  adj = {}
+  for (a, _x, b, _y, dd) in rows:
+    adj[(a,b)] = dd
+    adj[(b,a)] = dd
 
-rows = input_as_tuples(DAY, year=YEAR)
+  G = nx.Graph()
+  for k,v in adj.items():
+    G.add_edge(k[0], k[1], w=v)
 
-# TODO: tuples to adj??
-adj = {}
-for (a, _x, b, _y, dd) in rows:
-  adj[(a,b)] = dd
-  adj[(b,a)] = dd
+  return G
 
 
-G = nx.Graph()
-for k,v in adj.items():
-  G.add_edge(k[0], k[1], weight=v)
+def part1(rows, iobj):
+  G = parse(iobj)
+  paths = itertools.permutations(G.nodes())
 
-print(nx.info(G))
-print(nx.get_edge_attributes(G, 'weight'))
-def part1(G):
+  return min(path_weight(G, path) for path in paths)
 
-  v =0
+def part2(rows, iobj):
+  G = parse(iobj)
+  paths = itertools.permutations(G.nodes())
 
-  for a in G.nodes():
-    for b in G.nodes():
-      if a >= b:
-        continue
-      for p in nx.all_simple_paths(G, a, b):
-        if len(p) != len(G.nodes()):
-          continue
-
-        x = ( sum([G[e[0]][e[1]]['weight'] for e in pairwise(p)]))
-        if x > v:
-          v = x
-
-  return v
+  return max(path_weight(G, path) for path in paths)
 
 
-def part2(s):
-
-  return
-
-
-print('P1', part1(G))
-print('P2', part2(rows))
+print('P1', part1(rows, iobj))
+print('P2', part2(rows, iobj))

@@ -11,22 +11,13 @@ from util import *
 DAY = 3
 YEAR = 2015
 
-# TODO: how smart to make this?
-rows = input_rows(DAY, year=YEAR)
+iobj = Input.for_date(DAY, year=YEAR, test=False)
+iobj.pp_analyze()
+rows = list(iobj.rows)
 
-(kind, rows, min_row, max_row, _x) = analyze_input(rows)
-print("  Kind: %s" % kind)
-print("n rows: %4d" % rows)
-if min_row == max_row:
-  print("n cols: %4d" % (max_row))
-else:
-  print("n cols: %4d-%4d" % (min_row, max_row))
-print('.' * 16)
-print('')
 
-string = input_as_single_string(DAY, year=YEAR)
-
-def part1(s):
+def part1(row, iobj):
+  s = iobj.single_string()
   x = 0
   y = 0
 
@@ -43,7 +34,8 @@ def part1(s):
   return len(ss)
 
 
-def part2(s):
+def part2(row, iobj):
+  s = iobj.single_string()
   x = 0
   y = 0
 
@@ -73,5 +65,5 @@ def part2(s):
 
   return len(ss)
 
-print('P1', part1(string))
-print('P2', part2(string))
+print('P1', part1(rows, iobj))
+print('P2', part2(rows, iobj))

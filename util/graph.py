@@ -1,22 +1,23 @@
 import networkx as nx
 
+def path_weight(G, path):
+  return sum(G[s][t]['w'] for (s,t) in __pairwise(path))
 
 
-def tsp(G):
-  paths = itertools.permutations(G)
 
-  for path in paths:
-    p, W = None, 9999999
-    for (s,t) in pairwise(path):
-      edge = G[s][t]
-      if 'w' in edge:
-        w += e['w']
 
-    if w < W:
-      p, W = path, w
 
-  return w, p
+# TODO: fix these imports???
+import itertools
+def __pairwise(iterable):
+  """s -> (s0,s1), (s1,s2), (s2, s3), ...
 
+  >>> list(pairwise([1, 2, 3, 4]))
+  [(1, 2), (2, 3), (3, 4)]
+  """
+  a, b = itertools.tee(iterable)
+  next(b, None)
+  return zip(a, b)
 
 
 

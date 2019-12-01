@@ -33,6 +33,13 @@ def grouper(iterable, n, fillvalue=None):
   args = [iter(iterable)] * n
   return itertools.zip_longest(fillvalue=fillvalue, *args)
 
+def each_pair(iterable):
+  """
+  >>> each_pair([1,2,3,4,5])
+  [(1, 2), (2, 3), (3, 4), (4, 5)]
+  """
+  return each_cons(iterable, n=2)
+
 def each_cons(iterable, n=2):
   """
   >>> each_cons([1,2,3,4,5], 3)

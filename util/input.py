@@ -15,7 +15,13 @@ class Input:
   def peak(self, nrows=10, ncols=80):
     print('---- begin input ----')
     for row in self.rows[:nrows]:
-      print(str(row)[:ncols])
+      s = str(row)
+      if len(s) > ncols:
+        print(s[:ncols], 'and more...')
+      else:
+        print(s)
+    if len(self.rows) > nrows:
+      print('...')
     print('----  end input  ----')
     print('')
 

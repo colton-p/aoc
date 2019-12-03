@@ -29,6 +29,10 @@ class Input:
   def int_list(self):
     return [safe_int(x) for x in self.rows]
 
+  def ints(self):
+    (row,) = self.rows
+    return extract_numbers(row)
+
   ####
 
 

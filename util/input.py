@@ -11,19 +11,7 @@ class Input:
   def __init__(self, rows):
     self.rows = rows
 
-
-  def peak(self, nrows=10, ncols=80):
-    print('---- begin input ----')
-    for row in self.rows[:nrows]:
-      s = str(row)
-      if len(s) > ncols:
-        print(s[:ncols], 'and more...')
-      else:
-        print(s)
-    if len(self.rows) > nrows:
-      print('...')
-    print('----  end input  ----')
-    print('')
+  ####
 
   def single_string(self):
     (row,) = self.rows
@@ -41,6 +29,8 @@ class Input:
   def int_list(self):
     return [safe_int(x) for x in self.rows]
 
+  ####
+
 
   def pp_analyze(self):
     (kind, n_rows, max_row, min_row, _x) = self.__analyze()
@@ -53,6 +43,20 @@ class Input:
       print("n cols: %4d-%4d" % (min_row, max_row))
     print('.' * 16)
     print('')
+
+  def peak(self, nrows=10, ncols=80):
+    print('---- begin input ----')
+    for row in self.rows[:nrows]:
+      s = str(row)
+      if len(s) > ncols:
+        print(s[:ncols], 'and more...')
+      else:
+        print(s)
+    if len(self.rows) > nrows:
+      print('...')
+    print('----  end input  ----')
+    print('')
+
 
   def __analyze(self):
     n_rows = len(self.rows)

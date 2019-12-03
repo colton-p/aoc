@@ -1,7 +1,7 @@
 
 
 # TODO: automaton!
-# from util.automaton import *
+from util.automata import *
 
 from util.graph import *
 from util.grid import *

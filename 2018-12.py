@@ -85,7 +85,6 @@ def part1(rows, iobj):
 
   c = 0
   for ss in ca.evolve_n(20):
-    print(ca.state)
     pass
 
   return sum([ix for (ix,x) in ca.state.items() if x == '#'])
@@ -95,17 +94,15 @@ def part2(rows, iobj):
   ca = CA1(s0, rules)
 
   def f():
-    for ss in ca.evolve_n(20):
-      print(sum([ix for (ix,x) in ss.items() if x == '#']))
+    yield sum([ix for (ix,x) in ca.state.items() if x == '#'])
+    for ss in ca.evolve_n(2000):
+      #print(sum([ix for (ix,x) in ss.items() if x == '#']))
       yield sum([ix for (ix,x) in ca.state.items() if x == '#'])
 
 
 
-  for xx in f():
-    print(xx)
 
-
-  return c
+  return detect_num_seq(f())(5000000000)
 
 
 print('P1', part1(rows, iobj))

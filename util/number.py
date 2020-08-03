@@ -166,6 +166,11 @@ def gcdex(a, b):
   (g, s, t, u, v) = (old_r, old_s, old_t, s, t)
   return (g, s, t, u, v)
 
+def modinv(x, n):
+  (g, s, t, u, v) = gcdex(x, n)
+
+  return s % n
+
 if __name__ == '__main__':
   import doctest
   doctest.testmod()

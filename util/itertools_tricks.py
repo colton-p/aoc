@@ -70,6 +70,12 @@ def quantify(iterable, pred=bool):
   """
   return sum(map(pred, iterable))
 
+def lgroupby(iterable, pred=None):
+  return [(k, list(v)) for (k,v) in itertools.groupby(iterable, pred)]
+
+def dgroupby(iterable, pred=None):
+  return dict([(k, list(v)) for (k,v) in itertools.groupby(sorted(iterable), pred)])
+
 if __name__ == '__main__':
   import doctest
   doctest.testmod()

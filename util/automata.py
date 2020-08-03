@@ -1,4 +1,5 @@
 
+import itertools
 from collections import defaultdict
 
 class CA1:
@@ -44,5 +45,40 @@ class CA1:
 
     return t
 
+def detect_num_seq(g,n=5):
+  def each_cons(iterable, n=2):
+    iters = itertools.tee(iterable, n)
+    for ix, it in enumerate(iters):
+      for i in range(ix):
+        next(it, None)
+    return list(zip(*iters))
 
+  def is_arith(l):
+    d = l[1]-l[0]
+    for (a,b) in each_cons(l[1:]):
+      if b-a != d:
+        return False
 
+    return(l[0], l[1]-l[0])
+
+  L = []
+  for (ix,x) in enumerate(each_cons(g, n)):
+    params = is_arith(x)
+    if params:
+      (a,d) = params
+      break
+    else:
+      L.append(x[0])
+
+  print(ix, a, d)
+  def h(n):
+    if n < ix:
+      return L[n]
+    else:
+      return (n-ix)*d + a
+
+  return h
+
+if __name__ == '__main__':
+  import doctest
+  doctest.testmod()

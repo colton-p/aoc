@@ -23,58 +23,68 @@ def parse(iobj):
   return 
 
 
-
 class Intcode:
-  def __init__(self, program):
-    self.program = list(program)
-    self.o_program = tuple(program)
-
+  def __init__(self, listing):
+    self.listing = list(listing)
+    self.original_listing = tuple(listing)
+    self.pc = 0
 
   def reset(self):
-    self.program = list(self.o_program)
+    self.pc = 0
+    self.listing = list(self.original_listing)
 
-  def run(self, input_dict):
-    pc = 0
-    ll = list(self.program) # stateless
-    # ll = (self.program) # stateful
+  def run_one(self):
+    ll = self.listing
+    pc = self.pc
+    op = ll[pc]
 
+    if op == 1: # add
+      (r1, r2, dst) = ll[pc+1:pc+4]
+
+      ll[ dst ] = ll[r1] + ll[r2]
+      pc += 4
+    elif op == 2: # mult
+      # r r dr
+      (r1, r2, dst) = ll[pc+1:pc+4]
+
+      ll[ dst ] = ll[r1] * ll[r2]
+      pc += 4
+    elif op == 3:
+      #### HERE
+      pass
+    elif op == 4:
+      #### HERE
+      pass
+    elif op == 99: #end
+      self.pc = None
+      return False
+    else:
+      assert False, "Invalid op code %d at pc %d" % (op, pc)
+
+    self.pc = pc
+
+    return True
+
+  def run_g(self, input_dict={}):
     for k,v in input_dict.items():
-      ll[k] = v
+      self.listing[k] = v
 
+    while (self.run_one()):
+      yield(self.pc, self.listing)
 
-    while True:
-      op = ll[pc]
+  def run(self, input_dict={}):
+    for state in self.run_g(input_dict):
+      pass
 
-      if op == 1: # add
-        (r1, r2, dst) = ll[pc+1:pc+4]
+    return self.listing[0]
 
-        ll[ dst ] = ll[r1] + ll[r2]
-        pc += 4
-      elif op == 2: # mult
-        (r1, r2, dst) = ll[pc+1:pc+4]
-
-        ll[ dst ] = ll[r1] * ll[r2]
-        pc += 4
-     # elif op == 3:
-     #   pass
-     # elif op == 4:
-     #   pass
-      elif op == 99: #end
-        break
-      else:
-        assert False, "Invalid op code %d at pc %d" % (op, pc)
-
-
-    return ll[0]
 
 def part1(rows, iobj):
   ll = iobj.ints()
 
   pp = Intcode(ll)
 
-  print(pp.program)
   rslt = pp.run({1: 12, 2: 2})
-  print(pp.program)
 
   return rslt
 

@@ -18,7 +18,7 @@ class Input:
     return row
 
   def numeric_tuples(self):
-    return [extract_numbers(row) for row in self.rows]
+    return [ints(row) for row in self.rows]
 
   def tuples(self, split= ' '):
     return [
@@ -31,7 +31,11 @@ class Input:
 
   def ints(self):
     (row,) = self.rows
-    return extract_numbers(row)
+    return ints(row)
+
+  def pints(self):
+    (row,) = self.rows
+    return pints(row)
 
   ####
 
@@ -118,16 +122,19 @@ def safe_int(value):
   except ValueError:
     return value
 
-def extract_numbers(line):
+def ints(line):
   """
-  >>> extract_numbers('1 -2 3')
+  >>> ints('1 -2 3')
   [1, -2, 3]
 
-  >>> extract_numbers('abc-12 - 34')
+  >>> ints('abc-12 - 34')
   [-12, 34]
 
-  >>> extract_numbers('abcdef')
+  >>> ints('abcdef')
   []
   """
   return [int(x) for x in re.findall('-?\d+', line)]
 
+
+def pints(line):
+  return [int(x) for x in re.findall('\d+', line)]

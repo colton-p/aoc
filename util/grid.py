@@ -44,7 +44,7 @@ def grid_to_string(grid):
     for i in range(min_x, max_x+1):
       s += '%1s' % (grid[(i,j)])
     s += "\n"
-  return s.strip()
+  return s#.strip()
 
 def print_grid(grid):
   print(grid_to_string(grid))

@@ -7,7 +7,7 @@ echo "... $1.txt.test"
 touch "inputs/2019-$1.txt.test"
 
 echo "... go"
-echo "python3 2019-$1.py" > go
+echo "pypy 2019-$1.py" > go
 chmod +x go
 cat go
 python3 --version

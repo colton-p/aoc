@@ -1,6 +1,27 @@
 
 
 
+Grid class
+    - to/from grid
+    - to networkx graph
+    - adjacent fns?
+    - implicit grid???
+
+
+2d automaton class
+    - like implicit grid, with rules
+    - evolve method
+    - state count
+    - repeat detection
+
+
+Run input analyze on all inputs
+Finish problem summary
+
+
+
+Clean up below:
+
 Template for each day's problem:
   - autogenerate meta script
     - all includes

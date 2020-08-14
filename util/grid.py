@@ -8,6 +8,79 @@ Grids are left-to-right, top-to-bottom
   v 3.....
 """
 
+class Grid:
+    @classmethod
+    def from_string(string):
+        pass
+
+    def __init__(self, rows):
+      self.grid = {}
+      for (j, row) in enumerate(rows):
+        for (i, v) in enumerate(row):
+          self.grid[(i,j)] = v
+    
+    def to_s(self):
+      grid = self.grid
+      max_x = max(grid.keys(), key=lambda x:x[0])[0]
+      max_y = max(grid.keys(), key=lambda x:x[1])[1]
+
+      min_x = min(grid.keys(), key=lambda x:x[0])[0]
+      min_y = min(grid.keys(), key=lambda x:x[1])[1]
+
+      s = ''
+      for j in range(min_y, max_y+1):
+        for i in range(min_x, max_x+1):
+          s += '%1s' % (grid[(i,j)])
+        s += "\n"
+      return s.strip()
+    
+    def print(self):
+      print(self.to_s())
+    
+
+    def to_nx(self):
+      pass
+    
+
+class CA(Grid):
+  # TODO: should compose with grid
+  def __init__(self, rows, survival=[2,3], birth=[3]):
+    # TODO: options
+    # neighborhood = moore, vn
+    # borders = wrap unbounded hard
+    # sparse?
+
+    super().__init__(rows)
+    self.survival = survival
+    self.birth = birth
+  
+  def living_neighbours(self, pt):
+    return sum(1 for i in rect_adj_bounds(pt, 0, 99, 0, 99, diag=True) if self.grid[i] == '#')
+
+  def evolve(self):
+    child = {}
+    for pt in self.grid.keys():
+      nadj = self.living_neighbours(pt)
+      if self.grid[pt] == '#' and nadj in self.survival:
+        child[pt] = '#'
+      elif self.grid[pt] == '.' and nadj in self.birth:
+        child[pt] = '#'
+      else:
+        child[pt] = '.'
+    self.grid = child
+  
+  def number_alive(self):
+    return sum(1 for v in self.grid.values() if v == '#')
+
+  
+class ImplicitGrid:
+    # how can this work recursively?
+    def __init__(self, rule):
+      self.grid = {}
+    
+    def at(self, x, y):
+      pass
+
 
 def rows_to_grid(rows):
   """
@@ -44,7 +117,7 @@ def grid_to_string(grid):
     for i in range(min_x, max_x+1):
       s += '%1s' % (grid[(i,j)])
     s += "\n"
-  return s#.strip()
+  return s.strip()
 
 def print_grid(grid):
   print(grid_to_string(grid))

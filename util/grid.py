@@ -37,6 +37,7 @@ class Grid:
 
     self.default = default
     self.border_type = border_type
+    self._min_x = self._min_y = self._max_x = self._max_y = None
     
   def __getitem__(self, key):
     return self.grid[key]
@@ -64,13 +65,21 @@ class Grid:
 
   
   def min_x(self):
-    return min(self.grid.keys(), key=lambda x:x[0])[0]
+    if not self._min_x:
+      self._min_x = min(self.grid.keys(), key=lambda x:x[0])[0]
+    return self._min_x
   def min_y(self):
-    return min(self.grid.keys(), key=lambda x:x[1])[1]
+    if not self._min_y:
+      self._min_y = min(self.grid.keys(), key=lambda x:x[1])[1]
+    return self._min_y
   def max_x(self):
-    return max(self.grid.keys(), key=lambda x:x[0])[0]
+    if not self._max_x:
+      self._max_x = max(self.grid.keys(), key=lambda x:x[0])[0]
+    return self._max_x
   def max_y(self):
-    return max(self.grid.keys(), key=lambda x:x[1])[1]
+    if not self._max_y:
+      self._max_y = max(self.grid.keys(), key=lambda x:x[1])[1]
+    return self._max_y
 
   def dims(self):
     return (self.ncols(), self.nrows())

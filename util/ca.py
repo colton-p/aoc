@@ -2,6 +2,7 @@
 from collections import defaultdict
 import itertools
 
+import util.vector as vv
 from util import grid
 
 class CA2:

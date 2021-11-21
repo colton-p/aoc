@@ -4,6 +4,7 @@ old/
 2020-prep/
 .vscode
 html/
+leaderboard/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

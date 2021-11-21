@@ -9,31 +9,29 @@ import operator as op
 from util import *
 
 YEAR = 2017
-DAY = 12
+DAY = 2
 
 iobj = Input.for_date(DAY, year=YEAR, test=False)
+iobj.peak()
 iobj.pp_analyze()
 rows = list(iobj.rows)
 
 
-import networkx as nx
-
 def part1(rows, iobj):
-  rows = iobj.numeric_tuples()
-  adj = dict([x[0], x[1:]] for x in rows )
+  ll = iobj.numeric_tuples()
 
-  G = nx.Graph(adj)
-
-  return [len(cc) for cc in nx.connected_components(G) if 0 in cc]
-
+  return sum(max(row) - min(row)for row in ll)
 
 def part2(rows, iobj):
-  rows = iobj.numeric_tuples()
-  adj = dict([x[0], x[1:]] for x in rows )
+  ll = iobj.numeric_tuples()
+  s = 0
+  for row in ll:
+    for t in itertools.combinations(row, 2):
+        if max(t) % min(t) == 0:
+          s += max(t) // min(t)
 
-  G = nx.Graph(adj)
 
-  return(len(list(nx.connected_components(G))))
+  return s
 
 
 print('P1', part1(rows, iobj))

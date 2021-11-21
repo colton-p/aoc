@@ -2,6 +2,7 @@
 import itertools
 from collections import defaultdict
 
+"""
 class CA1:
   def __init__(self, s0, rules, dead='.'):
     self.rules = rules
@@ -82,3 +83,5 @@ def detect_num_seq(g,n=5):
 if __name__ == '__main__':
   import doctest
   doctest.testmod()
+
+"""

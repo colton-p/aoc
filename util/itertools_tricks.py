@@ -47,7 +47,7 @@ def each_cons(iterable, n=2):
   """
   iters = itertools.tee(iterable, n)
   for ix, it in enumerate(iters):
-    for i in range(ix):
+    for _i in range(ix):
       next(it, None)
   return list(zip(*iters))
 
@@ -63,18 +63,46 @@ def quantify(iterable, pred=bool):
   Count how many times the predicate is true
   >>> quantify([1,2,3,4,5], lambda x: x%2==1)
   3
-  >>> quantify([0,1,2])
-  2
+  >>> quantify([0,1,2,1])
+  3
   >>> quantify([1,2,3,4,5], lambda x: x * 100)
   1500
   """
   return sum(map(pred, iterable))
 
+
+def detect(iterable, pred=bool):
+  """
+  First value satisfying predicate
+  >>> detect([1,2,3,4,5], lambda x: x%2 == 0)
+  2
+  >>> detect([0,0,12,0])
+  12
+  >>> detect([0,0,0,0])
+  """
+  for x in (i for i in iterable if pred(i)):
+    return x
+  return None
+
+def compact(it):
+  """
+  Remove falsy values.
+  >>> compact([1, 0, 2, '', 3, None, 4, False]) 
+  [1, 2, 3, 4]
+  """
+  return [v for v in it if v]
+
 def lgroupby(iterable, pred=None):
-  return [(k, list(v)) for (k,v) in itertools.groupby(iterable, pred)]
+  """
+  group: list of (key, group) 
+  """
+  return [(k, list(v)) for (k,v) in itertools.groupby(sorted(iterable, key=pred), pred)]
 
 def dgroupby(iterable, pred=None):
-  return dict([(k, list(v)) for (k,v) in itertools.groupby(sorted(iterable), pred)])
+  """
+  group: dict of (key: group) 
+  """
+  return dict([(k, list(v)) for (k,v) in itertools.groupby(sorted(iterable, key=pred), pred)])
 
 if __name__ == '__main__':
   import doctest

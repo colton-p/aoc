@@ -119,12 +119,12 @@ def integer_factors(n):
   ps = prime_factors(n)
   ps = itertools.chain(*[ itertools.repeat(k,v) for (k,v) in ps.items()])
 
-  return sorted(list(set(product(s) for s in powerset(ps))))
+  return sorted(list(set(prod(s) for s in powerset(ps))))
 
 
-def product(iterable):
+def prod(iterable):
   """
-  >>> product([1,2,3,4])
+  >>> prod([1,2,3,4])
   24
   """
   v = 1
@@ -167,9 +167,29 @@ def gcdex(a, b):
   return (g, s, t, u, v)
 
 def modinv(x, n):
+  """
+  >>> modinv(7, 10)
+  3
+  >>> modinv(4, 10)
+  Traceback (most recent call last):
+    ...
+  ZeroDivisionError: (4, 10)
+  """
   (g, s, t, u, v) = gcdex(x, n)
+  if g != 1:
+    raise ZeroDivisionError(x, n)
 
   return s % n
+
+
+def binom(n, k):
+  """
+  >>> binom(4, 2)
+  6
+  >>> binom(9, 4)
+  126
+  """
+  return math.factorial(n) // (math.factorial(k) * math.factorial(n - k))
 
 if __name__ == '__main__':
   import doctest

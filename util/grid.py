@@ -1,90 +1,216 @@
-"""
-Grids are left-to-right, top-to-bottom
-     01234
-     x--->
-  y 0.....
-  | 1.....
-  | 2.....
-  v 3.....
-"""
+import collections
+import itertools
+import networkx as nx
 
 class Grid:
-    @classmethod
-    def from_string(string):
-        pass
-
-    def __init__(self, rows):
-      self.grid = {}
-      for (j, row) in enumerate(rows):
-        for (i, v) in enumerate(row):
-          self.grid[(i,j)] = v
-    
-    def to_s(self):
-      grid = self.grid
-      max_x = max(grid.keys(), key=lambda x:x[0])[0]
-      max_y = max(grid.keys(), key=lambda x:x[1])[1]
-
-      min_x = min(grid.keys(), key=lambda x:x[0])[0]
-      min_y = min(grid.keys(), key=lambda x:x[1])[1]
-
-      s = ''
-      for j in range(min_y, max_y+1):
-        for i in range(min_x, max_x+1):
-          s += '%1s' % (grid[(i,j)])
-        s += "\n"
-      return s.strip()
-    
-    def print(self):
-      print(self.to_s())
-    
-
-    def to_nx(self):
-      pass
-    
-
-class CA(Grid):
-  # TODO: should compose with grid
-  def __init__(self, rows, survival=[2,3], birth=[3]):
-    # TODO: options
-    # neighborhood = moore, vn
-    # borders = wrap unbounded hard
-    # sparse?
-
-    super().__init__(rows)
-    self.survival = survival
-    self.birth = birth
-
-    self.ALIVE = '#'
-    self.DEAD = '.'
+  """
+  Grids are left-to-right, top-to-bottom
+      01234
+      x--->
+    y 0.....
+    | 1.....
+    | 2.....
+    v 3.....
+  """
+  # TODO: sum adj
+  @classmethod
+  def from_string(cls, string, sep='\n', **kwargs):
+      return cls.from_rows(string.split(sep), **kwargs)
   
-  def evolve(self):
-    child = {}
-    for pt in self.grid.keys():
-      nadj = self.living_neighbours(pt)
-      if self.grid[pt] == self.ALIVE and nadj in self.survival:
-        child[pt] = self.ALIVE
-      elif self.grid[pt] == self.DEAD and nadj in self.birth:
-        child[pt] = self.ALIVE
-      else:
-        child[pt] = self.DEAD
-    self.grid = child
+  @classmethod
+  def from_dict(cls, dict):
+    return cls(dict)
+
+  @classmethod
+  def from_rows(cls, rows, **kwargs):
+    grid = {} 
+    for (j, row) in enumerate(rows):
+      for (i, v) in enumerate(row):
+        grid[(i,j)] = v
+    return cls(grid, **kwargs)
+
+  def __init__(self, grid, default='.', border_type=False, bounds='deduce'):
+    if border_type:
+      self.grid = dict(grid)
+    else:
+      self.grid = collections.defaultdict(lambda: default, grid)
+
+    self.default = default
+    self.border_type = border_type
+    
+  def __getitem__(self, key):
+    return self.grid[key]
+
+  def __setitem__(self, key, value):
+    self.grid[key] = value
   
-  def number_alive(self):
-    return sum(1 for v in self.grid.values() if v == self.ALIVE)
 
-  def living_neighbours(self, pt):
-    return sum(1 for i in rect_adj_bounds(pt, 0, 99, 0, 99, diag=True) if self.grid[i] == self.ALIVE)
+  def adj_k(self, pt, diag=True):
+    """ adjacent positions"""
+    return list(self.neighborhood(pt, diag=diag).keys())
+  def adj_v(self, pt, diag=True):
+    """adjacent values"""
+    return list(self.neighborhood(pt, diag=diag).values())
 
-
+  def neighborhood(self, pt, diag=True):
+    """
+    dictionary of adjacent cells
+    """
+    # TODO: wrap
+    if self.border_type == 'hard':
+      return {x: self[x] for x in rect_adj_bounds(pt, 0, self.max_x(), 0, self.max_y(), diag=diag)}
+    else:
+      return {x: self[x] for x in rect_adj(pt, diag=diag)}
 
   
-class ImplicitGrid:
-    # how can this work recursively?
-    def __init__(self, rule):
-      self.grid = {}
+  def min_x(self):
+    return min(self.grid.keys(), key=lambda x:x[0])[0]
+  def min_y(self):
+    return min(self.grid.keys(), key=lambda x:x[1])[1]
+  def max_x(self):
+    return max(self.grid.keys(), key=lambda x:x[0])[0]
+  def max_y(self):
+    return max(self.grid.keys(), key=lambda x:x[1])[1]
+
+  def dims(self):
+    return (self.ncols(), self.nrows())
+  def nrows(self):
+    return self.max_y() - self.min_y() + 1
+  def ncols(self):
+    return self.max_x() - self.min_x() + 1
+
+  def recenter(self):
+    (dx, dy) = (-self.min_x(), -self.min_y())
+    return self.translate(dx, dy)
+
+  def translate(self, dx, dy):
+    return self.transform(lambda x, y: (x+dx, y+dy))
+
+  def rotate_right(self):
+    return self.transform(lambda x,y: (-y, x))
+  def rotate_left(self):
+    return self.transform(lambda x,y: (y, -x))
+  def rotate_180(self):
+    return self.transform(lambda x,y: (-x, -y))
+  def flip_horizontal(self):
+    return self.transform(lambda x,y: (-x, y))
+  def flip_vertical(self):
+    return self.transform(lambda x,y: (x, -y))
+  def transpose(self):
+    return self.transform(lambda x,y: (y, x))
+  def transpose_antidiagonal(self):
+    return self.transform(lambda x,y: (-y, -x))
+  
+  def all_rotations(self):
+    yield Grid(dict(self.grid))
+    yield Grid(dict(self.grid)).rotate_right()
+    yield Grid(dict(self.grid)).rotate_left()
+    yield Grid(dict(self.grid)).rotate_180()
+
+  def all_orientations(self):
+    yield Grid(dict(self.grid))
+    yield Grid(dict(self.grid)).rotate_right()
+    yield Grid(dict(self.grid)).rotate_left()
+    yield Grid(dict(self.grid)).rotate_180()
+    yield Grid(dict(self.grid)).flip_vertical()
+    yield Grid(dict(self.grid)).flip_horizontal()
+    yield Grid(dict(self.grid)).transpose()
+    yield Grid(dict(self.grid)).transpose_antidiagonal()
+  
+  def transform(self, func):
+    new_grid = {}
+    for (x,y) in self.grid:
+      new_grid[func(x,y)] = self.grid[(x,y)]
+    self.grid = new_grid
+    return self
+  
+  def subgrid(self, x0, y0, nx, ny):
+    g = {}
+    for (x,y) in itertools.product(
+      range(x0, x0 + nx),
+      range(y0, y0 + ny)
+    ):
+      g[(x,y)] = self[(x,y)]
+    return Grid(g)
+      
+  def subgrids(self, nx, ny):
+    for (x0, y0) in itertools.product(
+      range(self.min_x(), self.max_x(), nx),
+      range(self.min_y(), self.max_y(), ny)
+    ):
+      yield ((x0 // nx, y0 // ny), self.subgrid(x0, y0, nx, ny))
+      
+
+  def count(self, val):
+    return sum(1 for v in self.grid.values() if v == val)
+  
+  def to_s(self, sep='\n', cell_size=1):
+    grid = self.grid
+    max_x = max(grid.keys(), key=lambda x:x[0])[0]
+    max_y = max(grid.keys(), key=lambda x:x[1])[1]
+
+    min_x = min(grid.keys(), key=lambda x:x[0])[0]
+    min_y = min(grid.keys(), key=lambda x:x[1])[1]
+
+    s = ''
+    cell_fmt = f'%{cell_size}s'
+    for j in range(min_y, max_y+1):
+      for i in range(min_x, max_x+1):
+        s += cell_fmt % (grid[(i,j)])
+      s += sep
+    return s[:-1]
+  
+  def print(self):
+    print(self.to_s())
+  
+  def to_nx(self, passable=None, impassable=None):
+    graph = nx.Graph()
+
+    if impassable is None:
+      impassable = set(self.grid.values()) - set(passable)
+    else:
+      impassable = set(impassable)
+
+    for k,v in self.grid.items():
+      if v in impassable: continue
+      graph.add_node(k, label=v)
     
-    def at(self, x, y):
-      pass
+    for k,v in self.grid.items():
+      if v in impassable: continue
+      for adj_k, adj_v in self.neighborhood(k, diag=False).items():
+        if adj_v in impassable: continue
+        graph.add_edge(k, adj_k)
+
+    return graph
+
+class GridIterators:
+  @classmethod
+  def spiral(cls, origin=(0,0), direction='ccw'):
+    pt = origin
+    yield pt
+
+    step = 1
+    d = (1,0)
+
+
+
+    while True:
+      for _i in range(step):
+        pt = (pt[0] + d[0], pt[1]+d[1])
+        yield pt
+      #d = (-d[1], d[0]) # 90deg
+      d = (d[1], -d[0]) # 90deg
+
+      for _i in range(step):
+        pt = (pt[0] + d[0], pt[1]+d[1])
+        yield pt
+      #d = (-d[1], d[0]) # 90deg
+      d = (d[1], -d[0]) # 270deg
+
+      step += 1
+
+
+
 
 
 def rows_to_grid(rows):
@@ -120,7 +246,7 @@ def grid_to_string(grid):
   s = ''
   for j in range(min_y, max_y+1):
     for i in range(min_x, max_x+1):
-      s += '%1s' % (grid[(i,j)])
+      s += '%1.1s' % (grid[(i,j)])
     s += "\n"
   return s.strip()
 

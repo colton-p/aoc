@@ -1,13 +1,1 @@
-echo "day $1"
-
-echo "... 2019-$1.py"
-python3 start.py $1
-chmod +x "2019-$1.py"
-echo "... $1.txt.test"
-touch "inputs/2019-$1.txt.test"
-
-echo "... go"
-echo "pypy 2019-$1.py" > go
-chmod +x go
-cat go
-python3 --version
+pypy start.py $@

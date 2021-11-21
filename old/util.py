@@ -551,7 +551,7 @@ def knapsack(values, weights, W):
 
 ########
 
-def bfs(start=None, adjacent_fn=None, goal_fn=None, passable_fn=lambda x: True):
+def bfs(start=None, adjacent_fn=None, goal_fn=None):
 
   open_set = collections.deque()
   closed_set = set()

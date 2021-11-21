@@ -1,13 +1,25 @@
 import math
 import operator
 
+# TODO: turn right
+def dright(d):
+  pass
+
+# TODO: turn left
+def dleft(d):
+  pass
+
+
+def vscale(v1, k):
+  return tuple( k*x for x in v1)
+
 def vadd(v1,v2):
   """
   >>> vadd([1,2,3], [10, 10, 20])
   [11, 12, 23]
   """
   assert len(v1) == len(v2)
-  return [(x+y) for (x,y) in zip(v1, v2)]
+  return tuple([(x+y) for (x,y) in zip(v1, v2)])
 
 def vsub(v1,v2):
   """

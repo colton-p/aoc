@@ -8,26 +8,34 @@ import operator as op
 
 from util import *
 
-YEAR = 2015
-DAY = 2
+YEAR = 2017
+DAY = 4
 
 iobj = Input.for_date(DAY, year=YEAR, test=False)
+iobj.peak()
 iobj.pp_analyze()
 rows = list(iobj.rows)
 
 
 def part1(rows, iobj):
-  s = iobj.numeric_tuples()
+  ss = iobj.tuples()
 
-  return sum([min([l*w, w*h, h*l]) + 2*l*w + 2*w*h + 2*h*l for (l,w,h) in s])
+  def f(row):
+    return len(row) == len(set(row))
+
+  return quantify(ss, f)
+
 
 
 def part2(rows, iobj):
-  s = iobj.numeric_tuples()
+  def f(row):
+    for (x,y) in itertools.combinations(row, 2):
+      if set(x) == set(y):
+        return False
+    return True
 
-  return sum([
-    sum(min( [(l,w), (w,h), (l,h)], key=lambda x: x[0]*x[1])) * 2 + l*w*h
-  for (l,w,h) in s])
+  return quantify(iobj.tuples(), f)
+
 
 print('P1', part1(rows, iobj))
 print('P2', part2(rows, iobj))

@@ -7,6 +7,11 @@ Grid class
     - adjacent fns?
     - implicit grid???
 
+    - iterators
+      - row first
+      - column first
+      - spiral out
+
 
 2d automaton class
     - like implicit grid, with rules
@@ -18,6 +23,15 @@ Grid class
 Run input analyze on all inputs
 Finish problem summary
 
+graphs:
+  grid -> networkx graph
+  adj func -> networkx graph
+
+  root(digraph) --> vertex with in_degree 0? is tree?
+  genericized 2017-07 part 2
+
+
+tests tests tests tests
 
 
 Clean up below:

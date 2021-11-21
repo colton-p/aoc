@@ -1,12 +1,11 @@
-#!/usr/bin/env python
-
 from collections import *
-from itertools import *
+import itertools as its
 import re
 import math
 import operator as op
 
 from util import *
+import util.output
 
 YEAR = <year>
 DAY = <day>
@@ -16,16 +15,26 @@ iobj.peak()
 iobj.pp_analyze()
 rows = list(iobj.rows)
 
+try:
+  ss = iobj.single_string()
+except:
+  ss = None
+try:
+  ll = iobj.int_list()
+except:
+  ll = None
+try:
+  nts = iobj.numeric_tuples()
+except:
+  nts = None
 
 def part1(rows, iobj):
 
   return
 
-
 def part2(rows, iobj):
 
   return
 
-
-print('P1', part1(rows, iobj))
-print('P2', part2(rows, iobj))
+util.output.pretty_answer('P1', part1(rows, iobj))
+util.output.pretty_answer('P2', part2(rows, iobj))

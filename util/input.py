@@ -3,10 +3,12 @@ import re
 
 import requests
 
+import util.input_stats
+
 class Input:
   @classmethod
   def for_date(cls, day, year=2019, test=False, strip = True):
-    return cls(input_rows(day, year, test, strip))
+    return cls(_input_rows(day, year, test, strip))
 
   def __init__(self, rows):
     self.rows = rows
@@ -14,26 +16,76 @@ class Input:
   ####
 
   def single_string(self):
+    """
+    Single unparsed row of input.
+    >>> Input(['hello']).single_string()
+    'hello'
+    """
     (row,) = self.rows
     return row
 
+  def single_int(self):
+    """
+    Single integer.
+    >>> Input(['1234']).single_int()
+    1234
+    """
+    (row,) = self.int_list()
+    return row
+
   def numeric_tuples(self):
-    return [ints(row) for row in self.rows]
+    """
+    Extract integers from each row.
+    >>> Input(['123 x 456', '11 -22']).numeric_tuples()
+    [(123, 456), (11, -22)]
+    """
+    return [tuple(ints(row)) for row in self.rows]
 
   def tuples(self, split= ' '):
+    """
+    Split each row, cast integers.
+    >>> Input(['hello 123', 'catch -22']).tuples()
+    [('hello', 123), ('catch', -22)]
+    """
     return [
       tuple(safe_int(x) for x in row.split(split))
       for row in self.rows
     ]
+  
+  def word_tuples(self):
+    """
+    Split each row on non-word characters, cast ints
+    >>> Input(['hello: 123', 'catch = -22']).tuples2()
+    [('hello', 123), ('catch', 22)]
+    """
+    return [
+      tuple(safe_int(x) for x in re.split('\W+', row))
+      for row in self.rows
+    ]
 
   def int_list(self):
+    """
+    Cast each row to integer.
+    >>> Input(['123', 'hi', '-22 456']).int_list()
+    [123, 'hi', '-22 456']
+    """
     return [safe_int(x) for x in self.rows]
 
   def ints(self):
+    """
+    Extract all integers from single row.
+    >>> Input(['hi 123-45xxx789']).ints()
+    [123, -45, 789]
+    """
     (row,) = self.rows
     return ints(row)
 
   def pints(self):
+    """
+    Extract all positive integers from single row.
+    >>> Input(['123-45xxx789']).pints()
+    [123, 45, 789]
+    """
     (row,) = self.rows
     return pints(row)
 
@@ -41,9 +93,15 @@ class Input:
 
 
   def pp_analyze(self):
-    (kind, n_rows, max_row, min_row, _x) = self.__analyze()
+    stats = util.input_stats.InputStats(self.rows)
+
+    (kind, details)  = stats.guess_kind()
+
+    n_rows = stats.n_rows()
+    (min_row, max_row) = stats.n_cols()
+
     print('.' * 16)
-    print("  Kind: %s" % kind)
+    print("  Kind: %s (%s)" % (kind, details))
     print("n rows: %4d" % n_rows)
     if min_row == max_row:
       print("n cols: %4d" % (max_row))
@@ -66,34 +124,11 @@ class Input:
     print('')
 
 
-  def __analyze(self):
-    n_rows = len(self.rows)
-    row_lens = list(map(len, self.rows))
-    kind = "???"
-
-    if n_rows == 1:
-      if safe_int(self.rows[0]) == self.rows[0]:
-        if re.match('^[A-Za-z]+$', self.rows[0]):
-          kind = "one string"
-        else:
-          kind = "one line"
-      else:
-        kind = "one number"
-    else:
-      if all( [type(safe_int(x)) == int for x in self.rows]):
-        kind = 'list of numbers'
-
-      if len(set(row_lens))==1:
-        kind = "grid (even row lengths)"
-
-    return (kind, n_rows, max(row_lens), min(row_lens), len(set(row_lens))==1)
-
-
-def input_rows(day, year=2019, test=False, strip=True):
+def _input_rows(day, year=2019, test=False, strip=True):
   path = 'inputs/%s-%s.txt' % (year, day)
   if test: path += '.test'
 
-  print(path, os.path.exists(path))
+  print(path, 'exists?', os.path.exists(path))
   if not os.path.exists(path):
     print('Fetching new input...')
     input_url = 'https://adventofcode.com/%s/day/%s/input' % (year, day)
@@ -133,8 +168,19 @@ def ints(line):
   >>> ints('abcdef')
   []
   """
-  return [int(x) for x in re.findall('-?\d+', line)]
+  return [int(x) for x in re.findall(r'-?\d+', line)]
 
 
 def pints(line):
   return [int(x) for x in re.findall('\d+', line)]
+
+if __name__ == '__main__':
+  import doctest
+  globs = {
+    'single': Input(['hello 123']),
+    'double': 'hello 123\nbye 456'
+  }
+  doctest.testmod(extraglobs=globs)
+
+
+

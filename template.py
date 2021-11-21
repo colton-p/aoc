@@ -15,18 +15,7 @@ iobj.peak()
 iobj.pp_analyze()
 rows = list(iobj.rows)
 
-try:
-  ss = iobj.single_string()
-except:
-  ss = None
-try:
-  ll = iobj.int_list()
-except:
-  ll = None
-try:
-  nts = iobj.numeric_tuples()
-except:
-  nts = None
+(ss, nn, ll, nts, tt, ww) = iobj.safe_inputs()
 
 def part1(rows, iobj):
 

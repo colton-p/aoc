@@ -1,5 +1,6 @@
 import os
 import re
+import itertools
 
 import requests
 
@@ -14,6 +15,10 @@ class Input:
     self.rows = rows
 
   ####
+
+  def line_delimited(self):
+    grouped = itertools.groupby(self.rows, lambda x: x != '')
+    return [tuple(v) for (k,v) in grouped if k]
 
   def single_string(self):
     """
@@ -88,6 +93,22 @@ class Input:
     """
     (row,) = self.rows
     return pints(row)
+  
+  def safe_inputs(self):
+    def safe(func):
+      try:
+        return func.__call__()
+      except:
+        return
+    
+    return (
+      safe(self.single_string),
+      safe(self.single_int),
+      safe(self.int_list),
+      safe(self.numeric_tuples),
+      safe(self.tuples),
+      safe(self.word_tuples),
+    )
 
   ####
 

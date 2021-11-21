@@ -1,5 +1,9 @@
 .aoc_session
+go
 old/
+2020-prep/
+.vscode
+html/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

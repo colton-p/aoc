@@ -104,6 +104,15 @@ def dgroupby(iterable, pred=None):
   """
   return dict([(k, list(v)) for (k,v) in itertools.groupby(sorted(iterable, key=pred), pred)])
 
+def set_partitions(iterable, n_buckets=2):
+  l = list(iterable)
+  n_items = len(l)
+
+  for idx in itertools.product(range(n_buckets), repeat=n_items):
+    d = { i: tuple() for i in range(n_buckets) }
+    d.update(dgroupby(zip(idx, l), pred=lambda x: x[0]))
+    yield tuple( tuple([v[1] for v in val]) for val in d.values() )
+
 if __name__ == '__main__':
   import doctest
   doctest.testmod()

@@ -53,24 +53,29 @@ class CA(Grid):
     super().__init__(rows)
     self.survival = survival
     self.birth = birth
-  
-  def living_neighbours(self, pt):
-    return sum(1 for i in rect_adj_bounds(pt, 0, 99, 0, 99, diag=True) if self.grid[i] == '#')
 
+    self.ALIVE = '#'
+    self.DEAD = '.'
+  
   def evolve(self):
     child = {}
     for pt in self.grid.keys():
       nadj = self.living_neighbours(pt)
-      if self.grid[pt] == '#' and nadj in self.survival:
-        child[pt] = '#'
-      elif self.grid[pt] == '.' and nadj in self.birth:
-        child[pt] = '#'
+      if self.grid[pt] == self.ALIVE and nadj in self.survival:
+        child[pt] = self.ALIVE
+      elif self.grid[pt] == self.DEAD and nadj in self.birth:
+        child[pt] = self.ALIVE
       else:
-        child[pt] = '.'
+        child[pt] = self.DEAD
     self.grid = child
   
   def number_alive(self):
-    return sum(1 for v in self.grid.values() if v == '#')
+    return sum(1 for v in self.grid.values() if v == self.ALIVE)
+
+  def living_neighbours(self, pt):
+    return sum(1 for i in rect_adj_bounds(pt, 0, 99, 0, 99, diag=True) if self.grid[i] == self.ALIVE)
+
+
 
   
 class ImplicitGrid:

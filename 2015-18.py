@@ -17,7 +17,7 @@ iobj.pp_analyze()
 rows = list(iobj.rows)
 
 
-def part1(rows, iobj):
+def _part1(rows, iobj):
   G = rows_to_grid(rows)
   G[(0,0)] = G[(99,0)] = G[(0, 99)] = G[(99, 99)] = '#'
   for it in range(100):
@@ -35,8 +35,7 @@ def part1(rows, iobj):
 
   return sum(1 for v in G.values() if v == '#')
 
-
-def part2(rows, iobj):
+def part1(rows, iobj):
   G = CA(rows, survival=[2,3], birth=[3])
 
   for _it in range(100):
@@ -44,6 +43,16 @@ def part2(rows, iobj):
   
   return G.number_alive()
 
+def part2(rows, iobj):
+  G = CA(rows, survival=[2,3], birth=[3])
 
-#print('P1', part1(rows, iobj))
+  G.grid[(0,0)] = G.grid[(99,0)] = G.grid[(0, 99)] = G.grid[(99, 99)] = '#'
+  for _it in range(100):
+    G.evolve()
+    G.grid[(0,0)] = G.grid[(99,0)] = G.grid[(0, 99)] = G.grid[(99, 99)] = '#'
+  
+  return G.number_alive()
+
+
+print('P1', part1(rows, iobj))
 print('P2', part2(rows, iobj))

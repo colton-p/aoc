@@ -1,6 +1,12 @@
 .aoc_session
 go
 old/
+!old/2015
+!old/2016
+!old/2017
+!old/2018
+!old/2019
+!old/2020
 2020-prep/
 .vscode
 html/

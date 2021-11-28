@@ -121,18 +121,18 @@ class Input:
     n_rows = stats.n_rows()
     (min_row, max_row) = stats.n_cols()
 
-    print('.' * 16)
+    print('.' * 32)
     print("  Kind: %s (%s)" % (kind, details))
     print("n rows: %4d" % n_rows)
     if min_row == max_row:
       print("n cols: %4d" % (max_row))
     else:
-      print("n cols: %4d-%4d" % (min_row, max_row))
-    print('.' * 16)
+      print("n cols: %4d - %4d" % (min_row, max_row))
+    print('.' * 32)
     print('')
 
-  def peak(self, nrows=10, ncols=80):
-    print('---- begin input ----')
+  def peek(self, nrows=10, ncols=80):
+    print('-------- begin input --------')
     for row in self.rows[:nrows]:
       s = str(row)
       if len(s) > ncols:
@@ -141,7 +141,7 @@ class Input:
         print(s)
     if len(self.rows) > nrows:
       print('...')
-    print('----  end input  ----')
+    print('--------  end input  --------')
     print('')
 
 

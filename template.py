@@ -11,7 +11,7 @@ YEAR = <year>
 DAY = <day>
 
 iobj = Input.for_date(DAY, year=YEAR, test=False)
-iobj.peak()
+iobj.peek()
 iobj.pp_analyze()
 rows = list(iobj.rows)
 

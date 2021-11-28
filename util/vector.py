@@ -1,22 +1,13 @@
 import math
 import operator
 
-# TODO: turn right
-def dright(d):
-  pass
-
-# TODO: turn left
-def dleft(d):
-  pass
-
-
 def vscale(v1, k):
   return tuple( k*x for x in v1)
 
 def vadd(v1,v2):
   """
   >>> vadd([1,2,3], [10, 10, 20])
-  [11, 12, 23]
+  (11, 12, 23)
   """
   assert len(v1) == len(v2)
   return tuple([(x+y) for (x,y) in zip(v1, v2)])
@@ -24,25 +15,25 @@ def vadd(v1,v2):
 def vsub(v1,v2):
   """
   >>> vsub([10,20,30], [3, 2, 1])
-  [7, 18, 29]
+  (7, 18, 29)
   """
   assert len(v1) == len(v2)
-  return [(x-y) for (x,y) in zip(v1, v2)]
+  return tuple([(x-y) for (x,y) in zip(v1, v2)])
 
 def vop(v1, v2, op):
   """
   >>> vop([10,20,30], [3, 2, 1], operator.sub)
-  [7, 18, 29]
+  (7, 18, 29)
 
   >>> vop([10,0,30], [1, 20, 3], max)
-  [10, 20, 30]
+  (10, 20, 30)
 
   >>> vop([10,20,30], [1, 2, 3], lambda x, y: 100 * y - x)
-  [90, 180, 270]
+  (90, 180, 270)
   """
   assert len(v1) == len(v2)
 
-  return [op(x,y) for (x,y) in zip(v1, v2)]
+  return tuple([op(x,y) for (x,y) in zip(v1, v2)])
 
 def vdist1(pt1, pt2):
   """

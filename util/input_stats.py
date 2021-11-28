@@ -25,21 +25,21 @@ class InputStats:
         if self.n_rows() == 1:
             row = self.rows[0]
             if is_int(row): 
-                return ('one number', len(row))
+                return ('one number (nn)', len(row))
             if re.match('^\w+$', row):
-                return 'one string', len(row)
+                return 'one string (ss)', len(row)
 
             if all(is_int(val) for val in re.split('\W+', row)):
-                return ('single list of numbers', ',')
+                return ('single row of numbers', ',')
 
         
         if all(is_int(row) for row in self.rows):
-            return 'list of single numbers', len(self.rows)
+            return 'list of single numbers (ll)', len(self.rows)
 
 
         (v, sep) = is_numeric_tuple(self.rows[0])
         if v:
-            return ('numeric tuple', f'(n={v} sep={sep})')
+            return ('numeric tuple (nts)', f'(n={v} sep={sep})')
 
         if self.n_rows() == 1:
             return 'one line', len(row)

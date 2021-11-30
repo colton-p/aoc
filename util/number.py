@@ -182,6 +182,16 @@ def modinv(x, n):
   return s % n
 
 
+def simul_congruence(n, a):
+  """
+  solve { x = a_i mod n_i }
+  """
+  NN = prod(n)
+  N = [NN // ni for ni in n]
+  M = [modinv(Ni, ni) for (Ni, ni) in zip(N, n)]
+
+  return sum(ai * Mi * Ni for (ai, Mi, Ni) in zip(a, M, N)) % NN
+
 def binom(n, k):
   """
   >>> binom(4, 2)

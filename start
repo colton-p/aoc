@@ -1,1 +1,1 @@
-pypy start.py $@
+python3 start.py $@

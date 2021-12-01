@@ -35,7 +35,7 @@ def make_generator(state, transition_func, reps=None):
         state = transition_func(state)
         yield state
 
-def detect_constant(state, transition_func, scoring_func=lambda x: x, threshhold=100):
+def detect_constant(state, transition_func, scoring_func=lambda x: x, threshhold=100, verbose=False):
     """
     iterate transition func until steady state seen
     """
@@ -47,6 +47,7 @@ def detect_constant(state, transition_func, scoring_func=lambda x: x, threshhold
         (last_state, state) = (copy.deepcopy(state), transition_func(state))
         generation += 1
 
+        if verbose: print(scoring_func(state))
         if scoring_func(last_state) == scoring_func(state):
             steady_count += 1
         else:

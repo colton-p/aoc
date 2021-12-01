@@ -2,6 +2,12 @@ import collections
 import itertools
 import networkx as nx
 
+# TODO: make pt in G work
+# TODO: count adj
+# TODO: beam iterator
+# TODO: row major, col major iterators
+
+
 class Grid:
   """
   Grids are left-to-right, top-to-bottom
@@ -20,6 +26,10 @@ class Grid:
   @classmethod
   def from_dict(cls, dict):
     return cls(dict)
+  
+  @classmethod
+  def from_grid(cls, grid):
+    return cls(grid.dict, default=grid.default, border_type=grid.border_type)
 
   @classmethod
   def from_rows(cls, rows, **kwargs):

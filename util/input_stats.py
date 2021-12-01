@@ -30,7 +30,7 @@ class InputStats:
                 return 'one string (ss)', len(row)
 
             if all(is_int(val) for val in re.split('\W+', row)):
-                return ('single row of numbers', ',')
+                return ('single row of numbers (nts)', ',')
 
         
         if all(is_int(row) for row in self.rows):

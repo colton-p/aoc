@@ -24,13 +24,13 @@ def create_test_input(args):
     return filename
 
 def create_go_script(script_file):
-  out = f"pypy {script_file}"
+  out = f"python3 {script_file}"
   with open('go', 'w') as f:
     f.write(out)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('day', type=int, choices=range(1, 26))
-parser.add_argument('year', nargs='?', type=int, choices=range(2015, 2021))
+parser.add_argument('year', nargs='?', type=int, choices=range(2015, 2022))
 
 parser.add_argument('--overwrite', default='x', action='store_const', const='w',dest='filemode')
 

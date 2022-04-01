@@ -44,10 +44,11 @@ def detect_constant(state, transition_func, scoring_func=lambda x: x, threshhold
     steady_count = 0
 
     while steady_count < threshhold:
-        (last_state, state) = (copy.deepcopy(state), transition_func(state))
+        #(last_state, state) = (copy.deepcopy(state), transition_func(state))
+        (last_state, state) = (state, transition_func(state))
         generation += 1
 
-        if verbose: print(scoring_func(state))
+        if verbose: print(generation)
         if scoring_func(last_state) == scoring_func(state):
             steady_count += 1
         else:

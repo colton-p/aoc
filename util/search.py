@@ -75,19 +75,69 @@ def bfs(start, adjacent_fn, goal=None):
 
   return None, parent_map
 
-def construct_path(state, parent_map):
+def construct_path(state, parent_map, dist):
   """
   Path from predecessor dict.
   """
   path = []
 
   while state in parent_map:
-    path.append(state)
+    path.append((state, dist[state]))
     state = parent_map[state]
 
   return list(reversed(path))
 
-def shortest_path(start, adjacent_fn, goal):
+def shortest_path(start, adjacent_fn, goal, h_fn):
+  """
+  Dijkstra shortest path
+
+  - adjacent_fn: (u) -> (v, weight)
+
+  Returns shortest `(dist, path)` from start to goal.
+  """
+  seen = set()
+  Q = heapdict()
+  dist = collections.defaultdict(lambda: 9999999999)
+  true_dist = collections.defaultdict(lambda: 9999999999)
+  prev = {}
+
+  prev[start] = None
+  dist[start] = 0
+  true_dist[start] = 0
+  Q[start] = 0
+
+  ii = 0
+
+  while len(Q) != 0:
+    (u, _) = Q.popitem()
+    ii += 1
+
+    if ii % 1000 == 0:
+      print(ii, len(Q), len(seen), dist[u])
+    if u == goal:
+      print('found')
+      return dist[u], construct_path(u, prev, dist)
+
+    seen.add(u)
+
+    for (v, weight) in adjacent_fn(u):
+      if v in seen:
+        continue
+      Q[v] = dist[v]
+
+      alt = dist[u] + weight
+      if alt < dist[v]:
+        # true_dist[v] = alt
+        dist[v] = alt# + h_fn(v)
+        Q[v] = alt
+
+        prev[v] = u
+
+  return dict(dist)[u], construct_path(u, prev, dist)
+
+
+
+def shortest_path2(start, adjacent_fn, goal):
   """
   Dijkstra shortest path
 
@@ -104,11 +154,16 @@ def shortest_path(start, adjacent_fn, goal):
   dist[start] = 0
   Q[start] = 0
 
+  ii = 0
+
   while len(Q) != 0:
     (u, _) = Q.popitem()
+    ii += 1
 
+    if ii % 1000 == 0:
+      print(ii, len(Q), len(seen), dist[u])
     if u == goal:
-      return dist[u], construct_path(u, prev)
+      return dist[u], construct_path(u, prev, dist)
 
     seen.add(u)
 
@@ -124,7 +179,9 @@ def shortest_path(start, adjacent_fn, goal):
 
         prev[v] = u
 
-  return dict(dist)[u], None
+  return dict(dist)[u], construct_path(u, prev, dist)
+
+
 
 def shortest_path_lengths(start, adjacent_fn, goal=None):
   """ all destinations shortest path"""

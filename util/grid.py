@@ -137,7 +137,7 @@ class Grid:
     yield Grid(dict(self.grid)).transpose_antidiagonal()
   
   def transform(self, func):
-    new_grid = {}
+    new_grid = collections.defaultdict(lambda: '.')
     for (x,y) in self.grid:
       new_grid[func(x,y)] = self.grid[(x,y)]
     self.grid = new_grid

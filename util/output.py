@@ -6,7 +6,7 @@ def smart_output(value):
     if type(value) == types.GeneratorType:
         value = list(value)
 
-    if isinstance(value, collections.Iterable):
+    if isinstance(value, collections.abc.Iterable):
         if all(type(v) == str and len(v) == 1 for v in value):
             return ''.join(value)
 

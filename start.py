@@ -30,7 +30,7 @@ def create_go_script(script_file):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('day', type=int, choices=range(1, 26))
-parser.add_argument('year', nargs='?', type=int, choices=range(2015, 2022))
+parser.add_argument('year', nargs='?', type=int, choices=range(2015, 2023))
 
 parser.add_argument('--overwrite', default='x', action='store_const', const='w',dest='filemode')
 

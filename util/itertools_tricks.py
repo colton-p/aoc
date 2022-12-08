@@ -15,16 +15,6 @@ def powerset(iterable):
   s = list(iterable)
   return itertools.chain.from_iterable(itertools.combinations(s, r) for r in range(len(s)+1))
 
-def pairwise(iterable):
-  """s -> (s0,s1), (s1,s2), (s2, s3), ...
-
-  >>> list(pairwise([1, 2, 3, 4]))
-  [(1, 2), (2, 3), (3, 4)]
-  """
-  a, b = itertools.tee(iterable)
-  next(b, None)
-  return zip(a, b)
-
 def grouper(iterable, n, fillvalue=None):
   """Collect data into fixed-length chunks or blocks
   >>> list(grouper('ABCDEFG', 3, 'x'))
@@ -33,12 +23,20 @@ def grouper(iterable, n, fillvalue=None):
   args = [iter(iterable)] * n
   return itertools.zip_longest(fillvalue=fillvalue, *args)
 
+def pairwise(iterable):
+  """s -> (s0,s1), (s1,s2), (s2, s3), ...
+
+  >>> list(pairwise([1, 2, 3, 4]))
+  [(1, 2), (2, 3), (3, 4)]
+  """
+  return itertools.pairwise(iterable)
+
 def each_pair(iterable):
   """
   >>> each_pair([1,2,3,4,5])
   [(1, 2), (2, 3), (3, 4), (4, 5)]
   """
-  return each_cons(iterable, n=2)
+  return list(itertools.pairwise(iterable))
 
 def each_cons(iterable, n=2):
   """

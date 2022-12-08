@@ -127,11 +127,7 @@ def prod(iterable):
   >>> prod([1,2,3,4])
   24
   """
-  v = 1
-  for x in iterable:
-    v *= x
-  return v
-
+  return math.prod(iterable)
 
 def gcd(a,b):
   """
@@ -139,10 +135,8 @@ def gcd(a,b):
   4
   >>> gcd(7, 3)
   1
-  >>> gcd(7, -3)
-  -1
   """
-  return gcdex(a, b)[0]
+  return math.gcd(a, b)
 
 def gcdex(a, b):
   """
@@ -199,7 +193,7 @@ def binom(n, k):
   >>> binom(9, 4)
   126
   """
-  return math.factorial(n) // (math.factorial(k) * math.factorial(n - k))
+  return math.comb(n, k)
 
 if __name__ == '__main__':
   import doctest

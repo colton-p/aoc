@@ -95,6 +95,14 @@ class Input:
     return pints(row)
   
   def safe_inputs(self):
+    """
+    ss - string
+    ii - int
+    ll - int[]
+    nts - Tuple<int>[]
+    tt - Tuple[]
+    wt - word tuple
+    """
     def safe(func):
       try:
         return func.__call__()

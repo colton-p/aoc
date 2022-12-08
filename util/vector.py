@@ -53,7 +53,7 @@ def vdist2(pt1, pt2):
   1.4142135623730951
   """
   assert len(pt1) == len(pt2)
-  return math.sqrt(sum([abs(x-y)**2 for (x,y) in zip(pt1, pt2)]))
+  return math.dist(pt1, pt2)
 
 def vdistn(pt1, pt2, k=2):
   """
